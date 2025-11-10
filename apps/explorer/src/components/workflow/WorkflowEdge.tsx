@@ -28,18 +28,19 @@ function WorkflowEdgeComponent({
     targetPosition,
   });
 
-  const edgeType = data?.type || "dependency";
+  const edgeData = data as IWorkflowEdge | undefined;
+  const edgeType = (edgeData?.type || "dependency") as keyof typeof edgeStyles;
   const edgeStyles = {
     parent: { stroke: "#3b82f6", strokeWidth: 2, strokeDasharray: "0" },
     dependency: { stroke: "#8b5cf6", strokeWidth: 2, strokeDasharray: "5,5" },
     event: { stroke: "#10b981", strokeWidth: 2, strokeDasharray: "0" },
     data: { stroke: "#f59e0b", strokeWidth: 2, strokeDasharray: "0" },
-  };
+  } as const;
 
-  const edgeStyle = {
+  const edgeStyle = style ? {
     ...style,
     ...edgeStyles[edgeType],
-  };
+  } : edgeStyles[edgeType];
 
   return (
     <>
@@ -49,7 +50,7 @@ function WorkflowEdgeComponent({
         markerEnd={markerEnd}
         style={edgeStyle}
       />
-      {data?.label && (
+      {edgeData?.label && (
         <EdgeLabelRenderer>
           <div
             style={{
@@ -60,7 +61,7 @@ function WorkflowEdgeComponent({
             }}
             className="nodrag nopan bg-background/80 px-1 py-0.5 rounded text-xs text-muted-foreground"
           >
-            {data.label}
+            {edgeData.label}
           </div>
         </EdgeLabelRenderer>
       )}

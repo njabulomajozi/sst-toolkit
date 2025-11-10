@@ -6,8 +6,9 @@ import { ResourceIcon } from "../ResourceList";
 import { cn } from "~/lib/utils";
 import type { IWorkflowNode } from "@sst-toolkit/shared/types/workflow";
 
-function ResourceNodeComponent({ data, selected }: NodeProps<IWorkflowNode["data"]>) {
-  const { resource, label, status, category, provider } = data;
+function ResourceNodeComponent({ data, selected }: NodeProps<IWorkflowNode>) {
+  const nodeData = data as IWorkflowNode["data"];
+  const { resource, label, status, category, provider } = nodeData;
 
   const statusColors = {
     completed: "bg-green-500",
@@ -27,7 +28,7 @@ function ResourceNodeComponent({ data, selected }: NodeProps<IWorkflowNode["data
     <Card
       className={cn(
         "min-w-[200px] max-w-[250px] shadow-lg",
-        selected && "ring-2 ring-primary"
+        selected ? "ring-2 ring-primary" : undefined
       )}
     >
       <CardContent className="p-3">

@@ -13,6 +13,8 @@ import {
   type Connection,
   type NodeTypes,
   type EdgeTypes,
+  type EdgeProps,
+  type NodeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { ResourceNode } from "./ResourceNode";
@@ -30,19 +32,19 @@ export function WorkflowCanvas({
   nodes: initialNodes,
   edges: initialEdges,
   onNodeSelect,
-  selectedNodeId,
+  selectedNodeId: _selectedNodeId,
 }: WorkflowCanvasProps) {
   const nodeTypes: NodeTypes = useMemo(
     () => ({
-      resource: ResourceNode,
+      resource: ResourceNode as unknown as React.ComponentType<NodeProps>,
     }),
     []
   );
 
   const edgeTypes: EdgeTypes = useMemo(
     () => ({
-      default: WorkflowEdge,
-    }),
+      default: WorkflowEdge as unknown as React.ComponentType<EdgeProps>,
+    }) as EdgeTypes,
     []
   );
 
