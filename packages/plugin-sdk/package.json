@@ -35,15 +35,19 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@sst-toolkit/core": "workspace:*",
     "@sst-toolkit/shared": "workspace:*"
   },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "sst": "^3.0.0"
+  },
   "devDependencies": {
+    "@pulumi/pulumi": "^3.0.0",
     "@types/react": "catalog:",
+    "sst": "^3.0.0",
     "tsup": "catalog:",
     "typescript": "catalog:"
-  },
-  "peerDependencies": {
-    "react": "^19.0.0"
   }
 }
 
