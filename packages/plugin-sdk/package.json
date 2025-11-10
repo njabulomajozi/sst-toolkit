@@ -23,6 +23,14 @@
       "types": "./src/component/index.ts",
       "default": "./src/component/index.ts"
     },
+    "./templates": {
+      "types": "./src/templates/index.ts",
+      "default": "./src/templates/index.ts"
+    },
+    "./generator": {
+      "types": "./src/generator/index.ts",
+      "default": "./src/generator/index.ts"
+    },
     "./types/*": {
       "types": "./src/types/*.ts",
       "default": "./src/types/*.ts"
