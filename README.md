@@ -12,6 +12,29 @@ SST Toolkit is a monorepo containing tools and utilities for working with SST (S
 - **Shared**: Shared types, utilities, schemas, and constants
 - **Plugin SDK**: SDK for creating extensions and plugins
 
+## Architecture
+
+SST Toolkit follows a modular architecture designed for extensibility:
+
+```
+sst-toolkit/
+├── packages/
+│   ├── core/          # Core utilities (state, relationships, workflow, adapters)
+│   ├── shared/        # Shared types, schemas, constants
+│   └── plugin-sdk/    # SDK for creating plugins and components
+├── apps/
+│   ├── explorer/      # Visual SST state explorer
+│   └── cli/           # Command-line interface
+└── examples/          # Example components and plugins
+```
+
+### Core Principles
+
+1. **Extensibility**: Built on adapter pattern to extend SST without modifying core
+2. **Type Safety**: Full TypeScript support with shared types
+3. **Modularity**: Each package is independently usable
+4. **Developer Experience**: CLI tools and SDK for rapid development
+
 ## Getting Started
 
 ### Installation
@@ -87,6 +110,158 @@ cd apps/cli
 pnpm build
 pnpm sst-toolkit explore <state-file>
 ```
+
+## Plugin Creation Guide
+
+SST Toolkit makes it easy to create custom SST components as plugins. Use the CLI to generate a new plugin:
+
+```bash
+# Create a basic plugin component
+pnpm sst-toolkit plugin create MyComponent --template basic --namespace mycompany
+
+# Create an AWS-focused plugin
+pnpm sst-toolkit plugin create MyAWSComponent --template aws --namespace mycompany
+
+# Create a Cloudflare-focused plugin
+pnpm sst-toolkit plugin create MyCloudflareComponent --template cloudflare --namespace mycompany
+```
+
+This generates a complete plugin structure with:
+- Component class extending `SSTComponent`
+- TypeScript configuration
+- Build scripts
+- Module augmentation for global types
+
+See [Plugin Development Guide](./docs/plugins/creating-plugins.md) for detailed instructions.
+
+## Component Extension Guide
+
+To extend SST with custom components, use the `SSTComponent` base class from `@sst-toolkit/plugin-sdk`:
+
+```typescript
+import * as Component from "@sst-toolkit/plugin-sdk/component";
+import type { ComponentResourceOptions } from "@pulumi/pulumi";
+
+export interface IMyComponentProps {
+  message?: string;
+}
+
+export class MyComponent extends Component.Component.SSTComponent {
+  constructor(
+    name: string,
+    props: IMyComponentProps = {},
+    opts?: ComponentResourceOptions
+  ) {
+    super("sst:mycompany:MyComponent", name, props, opts);
+
+    this.registerOutputs({
+      message: props.message || "Hello from MyComponent!",
+    });
+  }
+
+  protected getLinkProperties(): Record<string, unknown> {
+    return {
+      message: "Hello from MyComponent!",
+    };
+  }
+}
+```
+
+The `SSTComponent` class:
+- Extends Pulumi's `ComponentResource`
+- Implements SST's `Link.Linkable` interface
+- Validates Pulumi type format (`sst:namespace:Type`)
+- Provides type-safe component creation
+
+See [Component Development Guide](./docs/components/creating-components.md) for detailed instructions.
+
+## Examples
+
+### Using the CLI
+
+```bash
+# Explore SST state
+pnpm sst-toolkit explore ./state.json
+
+# Visualize workflow
+pnpm sst-toolkit visualize ./state.json --format json --output workflow.json
+
+# Create a new plugin
+pnpm sst-toolkit plugin create MyPlugin --template basic --namespace mycompany
+
+# List installed plugins
+pnpm sst-toolkit plugin list
+
+# Install a plugin
+pnpm sst-toolkit plugin install @mycompany/my-plugin
+```
+
+### Using Core Utilities
+
+```typescript
+import * as State from "@sst-toolkit/core/state";
+import * as Relationships from "@sst-toolkit/core/relationships";
+import * as Workflow from "@sst-toolkit/core/workflow";
+import type { ISSTState } from "@sst-toolkit/shared/types/sst";
+
+// Parse SST state
+const state: ISSTState = await loadState();
+const nodes = State.parseState(state);
+
+// Detect relationships
+const relationships = Relationships.parseResourceRelationships(state.latest.resources);
+
+// Build workflow
+const workflow = Workflow.buildWorkflow(state.latest.resources, relationships);
+```
+
+### Creating a Custom Component
+
+```typescript
+import * as Component from "@sst-toolkit/plugin-sdk/component";
+import { Function } from "sst/components/function";
+import type { ComponentResourceOptions } from "@pulumi/pulumi";
+
+export interface IMyAPIProps {
+  handler: string;
+}
+
+export class MyAPI extends Component.Component.SSTComponent {
+  private fn: Function;
+
+  constructor(
+    name: string,
+    props: IMyAPIProps,
+    opts?: ComponentResourceOptions
+  ) {
+    super("sst:mycompany:MyAPI", name, props, opts);
+
+    this.fn = new Function(`${name}Function`, {
+      handler: props.handler,
+    }, { parent: this });
+
+    this.registerOutputs({
+      url: this.fn.url,
+    });
+  }
+
+  protected getLinkProperties(): Record<string, unknown> {
+    return {
+      url: this.fn.url,
+    };
+  }
+}
+```
+
+## Documentation
+
+- [Documentation Index](./docs/README.md) - Browse all documentation
+- [Getting Started](./docs/GETTING_STARTED.md) - Quick start guide
+- [Creating Components](./docs/guides/creating-components.md) - Component creation guide
+- [Using Components](./docs/guides/using-components.md) - Component usage guide
+- [Exploring Infrastructure](./docs/guides/exploring-infrastructure.md) - CLI and Explorer guide
+- [API Reference](./docs/API.md) - Complete API documentation
+- [Examples](./docs/examples/) - Real-world examples
 
 ## License
 
