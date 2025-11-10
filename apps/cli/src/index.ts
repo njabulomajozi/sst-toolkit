@@ -31,12 +31,50 @@ program
     }
   });
 
-program
+const pluginCommand = program
   .command("plugin")
-  .description("Manage plugins")
+  .description("Manage plugins");
+
+pluginCommand
+  .command("create")
+  .description("Create a new plugin component")
+  .argument("<name>", "Component name (e.g., MyComponent)")
+  .option("-t, --template <template>", "Template to use (basic, aws, cloudflare)", "basic")
+  .option("-n, --namespace <namespace>", "Namespace for the component (e.g., mycompany)", "example")
+  .option("-o, --output <dir>", "Output directory", process.cwd())
+  .action(async (name: string, options: { template?: string; namespace?: string; output?: string }) => {
+    try {
+      const { createPlugin } = await import("./commands/plugin-create");
+      await createPlugin({
+        name,
+        template: (options.template || "basic") as "basic" | "aws" | "cloudflare",
+        namespace: options.namespace || "example",
+        outputDir: options.output,
+      });
+      process.stdout.write(`✅ Created plugin component "${name}" in ${options.output || process.cwd()}\n`);
+    } catch (error) {
+      process.stderr.write(`Failed to create plugin: ${error instanceof Error ? error.message : String(error)}\n`);
+      process.exit(1);
+    }
+  });
+
+pluginCommand
   .command("list", "List installed plugins")
+  .action(() => {
+    process.stdout.write("Plugin list command not yet implemented\n");
+  });
+
+pluginCommand
   .command("install", "Install a plugin")
-  .command("remove", "Remove a plugin");
+  .action(() => {
+    process.stdout.write("Plugin install command not yet implemented\n");
+  });
+
+pluginCommand
+  .command("remove", "Remove a plugin")
+  .action(() => {
+    process.stdout.write("Plugin remove command not yet implemented\n");
+  });
 
 if (process.argv.length <= 3) {
   program.help();

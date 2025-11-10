@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@sst-toolkit/core": "workspace:*",
+    "@sst-toolkit/plugin-sdk": "workspace:*",
     "@sst-toolkit/shared": "workspace:*",
     "commander": "catalog:"
   },
