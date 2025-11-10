@@ -128,7 +128,7 @@ export function ResourceTable({ resources, onSelectResource, selectedUrn }: IRes
   }, [resources]);
 
   const filteredAndSorted = useMemo(() => {
-    let filtered = resources.filter((resource) => {
+    const filtered = resources.filter((resource) => {
       // Global search
       if (searchQuery) {
         const name = State.getResourceName(resource);
@@ -207,10 +207,11 @@ export function ResourceTable({ resources, onSelectResource, selectedUrn }: IRes
       let groupKey: string;
 
       switch (groupBy) {
-        case "category":
+        case "category": {
           const category = State.getResourceTypeCategory(resource.type, resource);
           groupKey = category;
           break;
+        }
         case "provider":
           groupKey = State.getResourceProvider(resource.type);
           break;

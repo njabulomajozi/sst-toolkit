@@ -28,7 +28,7 @@ export async function loadInstalledPlugins(): Promise<IPluginMetadata[]> {
     }
 
     return plugins;
-  } catch (error) {
+  } catch {
     return [];
   }
 }

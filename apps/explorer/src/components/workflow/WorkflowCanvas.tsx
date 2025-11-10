@@ -32,7 +32,7 @@ export function WorkflowCanvas({
   nodes: initialNodes,
   edges: initialEdges,
   onNodeSelect,
-  selectedNodeId: _selectedNodeId,
+  selectedNodeId: _selectedNodeId, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: WorkflowCanvasProps) {
   const nodeTypes: NodeTypes = useMemo(
     () => ({
