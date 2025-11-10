@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import { Utils } from "@sst-toolkit/shared";
+import * as Relationships from "@sst-toolkit/core/relationships";
 import type { ISSTState } from "@sst-toolkit/shared/types/sst";
 
-const parseResourceRelationships = Utils.Relationships.parseResourceRelationships;
+const parseResourceRelationships = Relationships.parseResourceRelationships;
 
 const program = new Command();
 

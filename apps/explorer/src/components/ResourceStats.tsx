@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "~/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, CartesianGrid } from "recharts";
 import type { ISSTResource } from "@sst-toolkit/shared/types/sst";
-import * as State from "@sst-toolkit/shared/utils/state";
+import * as State from "@sst-toolkit/core/state";
 
 interface IResourceStatsProps {
   resources: ISSTResource[];

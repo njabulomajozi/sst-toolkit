@@ -5,9 +5,9 @@ import { ResourceDetail } from "~/components/ResourceDetail";
 import { ResourceStats } from "~/components/ResourceStats";
 import { CostDashboard } from "~/components/CostDashboard";
 import { WorkflowCanvas } from "~/components/workflow/WorkflowCanvas";
-import * as State from "@sst-toolkit/shared/utils/state";
-import * as Relationships from "@sst-toolkit/shared/utils/relationships";
-import * as Workflow from "@sst-toolkit/shared/utils/workflow";
+import * as State from "@sst-toolkit/core/state";
+import * as Relationships from "@sst-toolkit/core/relationships";
+import * as Workflow from "@sst-toolkit/core/workflow";
 import type { ISSTState, ISSTResource } from "@sst-toolkit/shared/types/sst";
 import { Spinner } from "~/components/ui/spinner";
 

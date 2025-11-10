@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "~/components/ui/command";
 import type { IResourceNode } from "@sst-toolkit/shared/types/sst";
-import * as State from "@sst-toolkit/shared/utils/state";
+import * as State from "@sst-toolkit/core/state";
 
 interface IResourceListProps {
   nodes: IResourceNode[];

@@ -34,7 +34,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import type { ISSTResource } from "@sst-toolkit/shared/types/sst";
-import * as State from "@sst-toolkit/shared/utils/state";
+import * as State from "@sst-toolkit/core/state";
 import { ResourceIcon } from "./ResourceList";
 
 interface IResourceTableProps {

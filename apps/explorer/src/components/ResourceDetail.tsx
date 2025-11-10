@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import type { ISSTResource } from "@sst-toolkit/shared/types/sst";
-import * as State from "@sst-toolkit/shared/utils/state";
+import * as State from "@sst-toolkit/core/state";
 
 interface IResourceDetailProps {
   resource: ISSTResource | null;

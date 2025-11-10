@@ -6,7 +6,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLe
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, CartesianGrid } from "recharts";
 import type { ISSTResource } from "@sst-toolkit/shared/types/sst";
 import { getTotalCost, getCostBreakdown, getProviderCostBreakdown, formatCost, estimateResourceCost } from "~/lib/cost-estimator";
-import * as State from "@sst-toolkit/shared/utils/state";
+import * as State from "@sst-toolkit/core/state";
 
 interface ICostDashboardProps {
   resources: ISSTResource[];

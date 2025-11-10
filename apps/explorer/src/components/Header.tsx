@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { Input } from "~/components/ui/input";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "~/components/ui/command";
 import type { ISSTResource } from "@sst-toolkit/shared/types/sst";
-import * as State from "@sst-toolkit/shared/utils/state";
+import * as State from "@sst-toolkit/core/state";
 
 interface IHeaderProps {
   onResourceSelect?: (resource: ISSTResource) => void;
