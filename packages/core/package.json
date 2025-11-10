@@ -30,6 +30,12 @@
       "import": "./dist/workflow/index.mjs",
       "require": "./dist/workflow/index.js",
       "default": "./dist/workflow/index.mjs"
+    },
+    "./adapters": {
+      "types": "./dist/adapters/index.d.ts",
+      "import": "./dist/adapters/index.mjs",
+      "require": "./dist/adapters/index.js",
+      "default": "./dist/adapters/index.mjs"
     }
   },
   "scripts": {
@@ -41,7 +47,12 @@
   "dependencies": {
     "@sst-toolkit/shared": "workspace:*"
   },
+  "peerDependencies": {
+    "sst": "^3.0.0"
+  },
   "devDependencies": {
+    "@pulumi/pulumi": "^3.0.0",
+    "sst": "^3.0.0",
     "tsup": "catalog:",
     "typescript": "catalog:"
   }
