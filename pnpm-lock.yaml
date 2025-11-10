@@ -332,6 +332,34 @@ importers:
         specifier: 'catalog:'
         version: 2.1.8(@types/node@24.7.1)(jsdom@24.1.3)(lightningcss@1.30.2)
 
+  packages/community:
+    dependencies:
+      '@pulumi/aws':
+        specifier: ^6.0.0
+        version: 6.83.1(typescript@5.9.3)
+      '@sst-toolkit/plugin-sdk':
+        specifier: workspace:*
+        version: link:../plugin-sdk
+    devDependencies:
+      '@pulumi/pulumi':
+        specifier: ^3.0.0
+        version: 3.206.0(typescript@5.9.3)
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 2.1.8(vitest@2.1.8(@types/node@24.7.1)(jsdom@24.1.3)(lightningcss@1.30.2))
+      sst:
+        specifier: ^3.0.0
+        version: 3.17.23
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(jiti@2.6.1)(postcss@8.5.6)(tsx@4.19.2)(typescript@5.9.3)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 2.1.8(@types/node@24.7.1)(jsdom@24.1.3)(lightningcss@1.30.2)
+
   packages/core:
     dependencies:
       '@sst-toolkit/shared':
@@ -1285,6 +1313,9 @@ packages:
 
   '@protobufjs/utf8@1.1.0':
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
+
+  '@pulumi/aws@6.83.1':
+    resolution: {integrity: sha512-c9HJiBKwgGWJg8h/mWWyfM7IguDsqzupf/WPD1fsosB1oMCuSoDHr27MxW9DQl6DXnkZRWnWYUIh31Gearwp3Q==}
 
   '@pulumi/pulumi@3.206.0':
     resolution: {integrity: sha512-xTiAcs7LhVOK2mUvTCUOlS7tTtzSh0T+C9pOAOkbpJuAX0GKw+wg7PZZ3qQbqW63fGfCBHs7h27e9d9iyHEC/w==}
@@ -3574,6 +3605,11 @@ packages:
     resolution: {integrity: sha512-xRc4oEhT6eaBpU1XF7AjpOFD+xQmXNB5OVKwp4tqCuBpHLS/ZbBDrc07mYTDqVMg6PfxUjjNp85O6Cd2Z/5HWA==}
     engines: {node: '>= 0.6'}
 
+  mime@2.6.0:
+    resolution: {integrity: sha512-USPkMeET31rOMiarsBNIHZKLGgvKc/LrjofAnBlOttf5ajRvqiRA8QsenbcooctK6d6Ts6aqZXBA+XbkKthiQg==}
+    engines: {node: '>=4.0.0'}
+    hasBin: true
+
   mimic-fn@2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
     engines: {node: '>=6'}
@@ -5853,6 +5889,16 @@ snapshots:
   '@protobufjs/pool@1.1.0': {}
 
   '@protobufjs/utf8@1.1.0': {}
+
+  '@pulumi/aws@6.83.1(typescript@5.9.3)':
+    dependencies:
+      '@pulumi/pulumi': 3.206.0(typescript@5.9.3)
+      mime: 2.6.0
+    transitivePeerDependencies:
+      - bluebird
+      - supports-color
+      - ts-node
+      - typescript
 
   '@pulumi/pulumi@3.206.0(typescript@5.9.3)':
     dependencies:
@@ -8292,6 +8338,8 @@ snapshots:
   mime-types@3.0.1:
     dependencies:
       mime-db: 1.54.0
+
+  mime@2.6.0: {}
 
   mimic-fn@2.1.0: {}
 
