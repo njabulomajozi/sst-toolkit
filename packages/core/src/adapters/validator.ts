@@ -32,10 +32,14 @@ export function validatePulumiType(pulumiType: string): boolean {
 }
 
 export function validateParent(_component: ComponentResource): boolean {
+  // Component parameter intentionally unused - validation logic may be added later
+  void _component;
   return true;
 }
 
 export function validateOutputs(_component: ComponentResource): boolean {
+  // Component parameter intentionally unused - validation logic may be added later
+  void _component;
   return true;
 }
 

@@ -9,12 +9,14 @@ describe("Relationships", () => {
         {
           urn: "urn:pulumi:test::test::sst:aws:Function::parent",
           type: "sst:aws:Function",
+          custom: true,
           inputs: {},
           outputs: {},
         },
         {
           urn: "urn:pulumi:test::test::aws:lambda/function:Function::child",
           type: "aws:lambda/function:Function",
+          custom: false,
           inputs: {},
           outputs: {},
           parent: "urn:pulumi:test::test::sst:aws:Function::parent",
@@ -31,6 +33,7 @@ describe("Relationships", () => {
         {
           urn: "urn:pulumi:test::test::aws:s3/bucket:Bucket::test-bucket",
           type: "aws:s3/bucket:Bucket",
+          custom: false,
           inputs: {},
           outputs: {},
         },

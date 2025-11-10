@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import * as State from "./state";
-import type { ISSTState } from "@sst-toolkit/shared/types/sst";
+import type { ISSTState, ISSTResource } from "@sst-toolkit/shared/types/sst";
 
 describe("State", () => {
   describe("parseState", () => {
@@ -10,12 +10,20 @@ describe("State", () => {
         latest: {
           manifest: {
             version: "1.0.0",
-            time: Date.now(),
+            time: new Date().toISOString(),
+            magic: "magic-value",
+          },
+          secrets_providers: {
+            type: "passphrase",
+            state: {
+              salt: "salt-value",
+            },
           },
           resources: [
             {
               urn: "urn:pulumi:test::test::aws:s3/bucket:Bucket::test-bucket",
               type: "aws:s3/bucket:Bucket",
+              custom: false,
               inputs: {},
               outputs: {
                 bucket: "test-bucket",
@@ -37,7 +45,14 @@ describe("State", () => {
         latest: {
           manifest: {
             version: "1.0.0",
-            time: Date.now(),
+            time: new Date().toISOString(),
+            magic: "magic-value",
+          },
+          secrets_providers: {
+            type: "passphrase",
+            state: {
+              salt: "salt-value",
+            },
           },
           resources: [],
         },
@@ -51,9 +66,10 @@ describe("State", () => {
 
   describe("getResourceName", () => {
     it("should extract resource name from URN", () => {
-      const resource = {
+      const resource: ISSTResource = {
         urn: "urn:pulumi:test::test::aws:s3/bucket:Bucket::test-bucket",
         type: "aws:s3/bucket:Bucket",
+        custom: false,
         inputs: {},
         outputs: {},
       };
@@ -65,9 +81,10 @@ describe("State", () => {
 
   describe("getResourceTypeCategory", () => {
     it("should categorize AWS resources", () => {
-      const resource = {
+      const resource: ISSTResource = {
         urn: "urn:pulumi:test::test::aws:s3/bucket:Bucket::test-bucket",
         type: "aws:s3/bucket:Bucket",
+        custom: false,
         inputs: {},
         outputs: {},
       };
