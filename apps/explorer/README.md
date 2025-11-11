@@ -46,10 +46,32 @@ pnpm preview
 
 ## Usage
 
-1. **Load State**: Import your SST state file (`.sst/state.json`) or use the sample data
-2. **Explore**: Navigate through resources using the sidebar
-3. **Visualize**: Switch to workflow view to see resource relationships
-4. **Inspect**: Click on resources to view detailed information
+### Exporting SST State
+
+Before using the Explorer, you need to export your SST state from your SST project:
+
+```bash
+# From your SST project directory
+# Export state for a specific stage (e.g., dev, staging, prod)
+npx sst state export --stage dev > /path/to/sst-toolkit/apps/explorer/public/misc/state.json
+
+# Example with absolute path
+npx sst state export --stage dev > ~/Documents/development/playground/oss/sst-toolkit/apps/explorer/public/misc/state.json
+
+# Or use relative path from your SST project
+npx sst state export --stage dev > ../sst-toolkit/apps/explorer/public/misc/state.json
+```
+
+**Note**: Replace `/path/to/sst-toolkit` with the actual path to your sst-toolkit repository, and adjust the stage name (`dev`, `staging`, `prod`, etc.) as needed.
+
+### Using the Explorer
+
+1. **Export State**: Run the export command above from your SST project
+2. **Start Explorer**: Start the development server (see Development section)
+3. **Load State**: The Explorer automatically loads state from `/public/misc/state.json`
+4. **Explore**: Navigate through resources using the sidebar
+5. **Visualize**: Switch to workflow view to see resource relationships
+6. **Inspect**: Click on resources to view detailed information
 
 ## Features in Detail
 
