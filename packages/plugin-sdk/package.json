@@ -57,20 +57,23 @@
     "@sst-toolkit/shared": "workspace:*"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "sst": "^3.0.0"
+    "@pulumi/aws": "catalog:",
+    "react": "catalog:",
+    "sst": "catalog:"
   },
   "devDependencies": {
-    "@pulumi/pulumi": "^3.0.0",
+    "@pulumi/pulumi": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
     "@types/react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
-    "sst": "^3.0.0",
+    "sst": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }
 }
+
+
 

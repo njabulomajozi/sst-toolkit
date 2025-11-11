@@ -8,6 +8,6 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   outDir: "dist",
-  external: ["@pulumi/pulumi", "sst"],
+  external: ["@pulumi/pulumi", "@pulumi/aws", "sst"],
 });
 
