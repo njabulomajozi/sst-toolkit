@@ -2,6 +2,10 @@
 misc/
 **/misc/
 
+# Test data and sample files
+**/public/misc/*.json
+!**/public/misc/.gitkeep
+
 # Dependencies
 node_modules/
 .pnp
