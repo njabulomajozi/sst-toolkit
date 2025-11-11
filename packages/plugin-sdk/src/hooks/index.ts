@@ -5,3 +5,5 @@ export interface IPluginHooks {
   onResourceSelect?: (resource: unknown) => void;
 }
 
+
+

@@ -48,3 +48,5 @@ export interface IAnalysisResult {
   recommendations?: string[];
 }
 
+
+
