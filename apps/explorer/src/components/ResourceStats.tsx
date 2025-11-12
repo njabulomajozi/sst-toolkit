@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "~/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, CartesianGrid } from "recharts";
@@ -7,6 +7,7 @@ import * as State from "@sst-toolkit/core/state";
 
 interface IResourceStatsProps {
   resources: ISSTResource[];
+  pendingOperationsResources?: ISSTResource[];
 }
 
 /**
@@ -106,22 +107,21 @@ function getCategoryColor(category: string, provider: string): string {
 }
 
 
-export function ResourceStats({ resources }: IResourceStatsProps) {
-  // Filter resources to match Explorer structure: only root nodes and direct children
-  // This ensures charts show the same counts as Explorer
-  const filteredResources = useMemo(() => {
+export function ResourceStats({ resources, pendingOperationsResources = [] }: IResourceStatsProps) {
+  // Helper function to filter resources to match Explorer structure: only root nodes and direct children
+  const filterResourcesForStats = useCallback((resourcesToFilter: ISSTResource[]) => {
     // Build a set of all resource URNs to check parent relationships
-    const allUrns = new Set(resources.map((r) => r.urn));
+    const allUrns = new Set(resourcesToFilter.map((r) => r.urn));
     // Build a map of URN to resource for O(1) lookups
     const urnToResource = new Map<string, ISSTResource>();
-    resources.forEach((resource) => {
+    resourcesToFilter.forEach((resource) => {
       urnToResource.set(resource.urn, resource);
     });
     
     // Process all resources, but only include those that are either:
     // 1. Root nodes (no parent), OR
     // 2. Direct children of root nodes (parent exists but parent's parent doesn't exist in our list)
-    return resources.filter((resource) => {
+    return resourcesToFilter.filter((resource) => {
       const hasParent = resource.parent !== undefined && resource.parent !== null;
       
       if (hasParent && resource.parent) {
@@ -139,9 +139,66 @@ export function ResourceStats({ resources }: IResourceStatsProps) {
       
       return true;
     });
-  }, [resources]);
+  }, []);
 
-  // Calculate provider statistics
+  // Filter regular resources (non-pending)
+  const filteredRegularResources = useMemo(() => {
+    return filterResourcesForStats(resources);
+  }, [resources, filterResourcesForStats]);
+
+  // Filter pending operations resources
+  const filteredPendingResources = useMemo(() => {
+    // Create a Set of URNs from regular resources to avoid duplicates
+    const resourceUrns = new Set(resources.map((r) => r.urn));
+    // Get unique pending resources that aren't already in regular resources
+    const uniquePendingResources = pendingOperationsResources.filter(
+      (r) => !resourceUrns.has(r.urn)
+    );
+    return filterResourcesForStats(uniquePendingResources);
+  }, [resources, pendingOperationsResources, filterResourcesForStats]);
+
+  // Combine regular resources with pending operations resources for total stats
+  // This helps users understand that pending operations resources exist and aren't orphaned
+  const allResourcesForStats = useMemo(() => {
+    // Create a Set of URNs from regular resources to avoid duplicates
+    const resourceUrns = new Set(resources.map((r) => r.urn));
+    // Add pending operations resources that aren't already in regular resources
+    const uniquePendingResources = pendingOperationsResources.filter(
+      (r) => !resourceUrns.has(r.urn)
+    );
+    return [...resources, ...uniquePendingResources];
+  }, [resources, pendingOperationsResources]);
+
+  // Filter combined resources
+  const filteredResources = useMemo(() => {
+    return filterResourcesForStats(allResourcesForStats);
+  }, [allResourcesForStats, filterResourcesForStats]);
+
+  // Calculate provider statistics for deployed resources
+  const deployedProviderStats = useMemo(() => {
+    const counts = new Map<string, number>();
+    filteredRegularResources.forEach((resource) => {
+      const provider = State.getResourceProvider(resource.type);
+      counts.set(provider, (counts.get(provider) || 0) + 1);
+    });
+    return Array.from(counts.entries())
+      .map(([provider, count]) => ({ provider, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [filteredRegularResources]);
+
+  // Calculate provider statistics for pending resources
+  const pendingProviderStats = useMemo(() => {
+    const counts = new Map<string, number>();
+    filteredPendingResources.forEach((resource) => {
+      const provider = State.getResourceProvider(resource.type);
+      counts.set(provider, (counts.get(provider) || 0) + 1);
+    });
+    return Array.from(counts.entries())
+      .map(([provider, count]) => ({ provider, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [filteredPendingResources]);
+
+  // Calculate provider statistics for total (combined)
   const providerStats = useMemo(() => {
     const counts = new Map<string, number>();
     filteredResources.forEach((resource) => {
@@ -153,7 +210,59 @@ export function ResourceStats({ resources }: IResourceStatsProps) {
       .sort((a, b) => b.count - a.count);
   }, [filteredResources]);
 
-  // Calculate category statistics using Explorer structure (sub-category only)
+  // Calculate category statistics for deployed resources
+  const deployedCategoryStats = useMemo(() => {
+    const categoryCounts = new Map<string, number>();
+    const categoryCache = new Map<string, string>();
+    
+    filteredRegularResources.forEach((resource) => {
+      const category = State.getResourceTypeCategory(resource.type, resource);
+      
+      // Extract sub-category (everything after " > ") - same as Explorer
+      let subCategory: string;
+      if (categoryCache.has(category)) {
+        subCategory = categoryCache.get(category)!;
+      } else {
+        subCategory = category.includes(" > ") 
+          ? category.split(" > ")[1] 
+          : category;
+        categoryCache.set(category, subCategory);
+      }
+      
+      categoryCounts.set(subCategory, (categoryCounts.get(subCategory) || 0) + 1);
+    });
+    return Array.from(categoryCounts.entries())
+      .map(([category, count]) => ({ category, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [filteredRegularResources]);
+
+  // Calculate category statistics for pending resources
+  const pendingCategoryStats = useMemo(() => {
+    const categoryCounts = new Map<string, number>();
+    const categoryCache = new Map<string, string>();
+    
+    filteredPendingResources.forEach((resource) => {
+      const category = State.getResourceTypeCategory(resource.type, resource);
+      
+      // Extract sub-category (everything after " > ") - same as Explorer
+      let subCategory: string;
+      if (categoryCache.has(category)) {
+        subCategory = categoryCache.get(category)!;
+      } else {
+        subCategory = category.includes(" > ") 
+          ? category.split(" > ")[1] 
+          : category;
+        categoryCache.set(category, subCategory);
+      }
+      
+      categoryCounts.set(subCategory, (categoryCounts.get(subCategory) || 0) + 1);
+    });
+    return Array.from(categoryCounts.entries())
+      .map(([category, count]) => ({ category, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [filteredPendingResources]);
+
+  // Calculate category statistics for total (combined)
   const categoryStats = useMemo(() => {
     const categoryCounts = new Map<string, number>();
     const categoryCache = new Map<string, string>();
@@ -221,6 +330,14 @@ export function ResourceStats({ resources }: IResourceStatsProps) {
   const totalResources = useMemo(() => {
     return filteredResources.length;
   }, [filteredResources]);
+
+  const regularResourcesCount = useMemo(() => {
+    return filteredRegularResources.length;
+  }, [filteredRegularResources]);
+
+  const pendingResourcesCount = useMemo(() => {
+    return filteredPendingResources.length;
+  }, [filteredPendingResources]);
 
 
   // Generate colors for each category (using sub-category from Explorer structure)
@@ -300,9 +417,40 @@ export function ResourceStats({ resources }: IResourceStatsProps) {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
+            <CardDescription>Deployed Resources</CardDescription>
+            <CardTitle className="text-3xl">{regularResourcesCount.toLocaleString()}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-xs text-muted-foreground">
+              Currently deployed
+            </div>
+          </CardContent>
+        </Card>
+        {pendingResourcesCount > 0 && (
+          <Card className="border-yellow-500/20 bg-yellow-500/5">
+            <CardHeader className="pb-2">
+              <CardDescription>Pending Resources</CardDescription>
+              <CardTitle className="text-3xl">{pendingResourcesCount.toLocaleString()}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xs text-yellow-600 dark:text-yellow-400">
+                Awaiting deployment
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        <Card>
+          <CardHeader className="pb-2">
             <CardDescription>Total Resources</CardDescription>
             <CardTitle className="text-3xl">{totalResources.toLocaleString()}</CardTitle>
           </CardHeader>
+          <CardContent>
+            <div className="text-xs text-muted-foreground">
+              {pendingResourcesCount > 0
+                ? `${regularResourcesCount} deployed + ${pendingResourcesCount} pending`
+                : "All deployed"}
+            </div>
+          </CardContent>
         </Card>
         {providerStats.map(({ provider, count }) => (
           <Card key={provider}>
@@ -326,7 +474,9 @@ export function ResourceStats({ resources }: IResourceStatsProps) {
           <CardHeader>
             <CardTitle>Provider Distribution</CardTitle>
             <CardDescription>
-              Breakdown by provider (SST vs AWS)
+              {pendingResourcesCount > 0
+                ? `Total breakdown by provider (${regularResourcesCount} deployed + ${pendingResourcesCount} pending)`
+                : "Breakdown by provider (SST vs AWS)"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -384,7 +534,9 @@ export function ResourceStats({ resources }: IResourceStatsProps) {
           <CardHeader>
             <CardTitle>Category Breakdown</CardTitle>
             <CardDescription>
-              Percentage distribution of resources
+              {pendingResourcesCount > 0
+                ? `Total distribution (${regularResourcesCount} deployed + ${pendingResourcesCount} pending)`
+                : "Percentage distribution of resources"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -440,7 +592,9 @@ export function ResourceStats({ resources }: IResourceStatsProps) {
           <CardHeader>
             <CardTitle>Provider Breakdown by Category</CardTitle>
             <CardDescription>
-              SST vs AWS distribution within each sub-category
+              {pendingResourcesCount > 0
+                ? `SST vs AWS distribution (includes ${pendingResourcesCount} pending)`
+                : "SST vs AWS distribution within each sub-category"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -513,7 +667,9 @@ export function ResourceStats({ resources }: IResourceStatsProps) {
           <CardHeader>
             <CardTitle>Provider Comparison</CardTitle>
             <CardDescription>
-              Side-by-side comparison of SST vs AWS by category
+              {pendingResourcesCount > 0
+                ? `SST vs AWS comparison (includes ${pendingResourcesCount} pending)`
+                : "Side-by-side comparison of SST vs AWS by category"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -583,7 +739,9 @@ export function ResourceStats({ resources }: IResourceStatsProps) {
           <CardHeader>
             <CardTitle>Resource Distribution</CardTitle>
             <CardDescription>
-              {totalResources.toLocaleString()} total resources by category
+              {pendingResourcesCount > 0
+                ? `${totalResources.toLocaleString()} total resources (${regularResourcesCount} deployed + ${pendingResourcesCount} pending)`
+                : `${totalResources.toLocaleString()} total resources by category`}
             </CardDescription>
           </CardHeader>
           <CardContent>
