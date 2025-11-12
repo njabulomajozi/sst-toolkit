@@ -11,10 +11,10 @@ function ResourceNodeComponent({ data, selected }: NodeProps<IWorkflowNode>) {
   const { resource, label, status, category, provider } = nodeData;
 
   const statusColors = {
-    completed: "bg-green-500",
-    running: "bg-blue-500",
-    failed: "bg-red-500",
-    pending: "bg-gray-500",
+    completed: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
+    running: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+    failed: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
+    pending: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20",
   };
 
   const statusLabels = {
@@ -49,7 +49,7 @@ function ResourceNodeComponent({ data, selected }: NodeProps<IWorkflowNode>) {
               </Badge>
               <Badge
                 variant="outline"
-                className={cn("text-xs", statusColors[status])}
+                className={cn("text-xs border", statusColors[status])}
               >
                 {statusLabels[status]}
               </Badge>

@@ -93,12 +93,25 @@ export function WorkflowCanvas({
         fitView
         attributionPosition="bottom-left"
       >
-        <Background />
+        <Background variant="dots" gap={12} size={1} />
         <Controls />
-        <MiniMap />
-        <Panel position="top-left" className="bg-background/80 p-2 rounded">
-          <div className="text-sm text-muted-foreground">
-            {nodes.length} nodes • {edges.length} connections
+        <MiniMap
+          nodeColor={(node) => {
+            const status = (node.data as IWorkflowNode["data"])?.status;
+            if (status === "completed") return "#10b981";
+            if (status === "running") return "#3b82f6";
+            if (status === "failed") return "#ef4444";
+            if (status === "pending") return "#eab308";
+            return "#6b7280";
+          }}
+          maskColor="rgba(0, 0, 0, 0.1)"
+        />
+        <Panel position="top-left" className="bg-background/90 backdrop-blur-sm p-3 rounded-lg border shadow-sm">
+          <div className="text-sm font-medium">
+            <span className="text-foreground">{nodes.length}</span>{" "}
+            <span className="text-muted-foreground">nodes</span> •{" "}
+            <span className="text-foreground">{edges.length}</span>{" "}
+            <span className="text-muted-foreground">connections</span>
           </div>
         </Panel>
       </ReactFlow>
