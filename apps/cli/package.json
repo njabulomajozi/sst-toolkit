@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "description": "CLI tool for SST Toolkit",
-  "type": "module",
   "bin": {
     "sst-toolkit": "./dist/index.js"
   },
