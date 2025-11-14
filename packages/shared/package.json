@@ -25,6 +25,18 @@
       "require": "./dist/types/*.js",
       "default": "./dist/types/*.mjs"
     },
+    "./types/cli": {
+      "types": "./dist/types/cli/index.d.ts",
+      "import": "./dist/types/cli/index.mjs",
+      "require": "./dist/types/cli/index.js",
+      "default": "./dist/types/cli/index.mjs"
+    },
+    "./types/cli/*": {
+      "types": "./dist/types/cli/*.d.ts",
+      "import": "./dist/types/cli/*.mjs",
+      "require": "./dist/types/cli/*.js",
+      "default": "./dist/types/cli/*.mjs"
+    },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
       "import": "./dist/utils/index.mjs",
@@ -36,6 +48,24 @@
       "import": "./dist/utils/*.mjs",
       "require": "./dist/utils/*.js",
       "default": "./dist/utils/*.mjs"
+    },
+    "./utils/cli": {
+      "types": "./dist/utils/cli/index.d.ts",
+      "import": "./dist/utils/cli/index.mjs",
+      "require": "./dist/utils/cli/index.js",
+      "default": "./dist/utils/cli/index.mjs"
+    },
+    "./utils/cli/*": {
+      "types": "./dist/utils/cli/*.d.ts",
+      "import": "./dist/utils/cli/*.mjs",
+      "require": "./dist/utils/cli/*.js",
+      "default": "./dist/utils/cli/*.mjs"
+    },
+    "./utils/concurrency": {
+      "types": "./dist/utils/concurrency/index.d.ts",
+      "import": "./dist/utils/concurrency/index.mjs",
+      "require": "./dist/utils/concurrency/index.js",
+      "default": "./dist/utils/concurrency/index.mjs"
     },
     "./schemas": {
       "types": "./dist/schemas/index.d.ts",
@@ -57,6 +87,10 @@
     "lint:type": "tsc --noEmit",
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-resource-groups-tagging-api": "catalog:",
+    "@aws-sdk/credential-providers": "catalog:"
   },
   "devDependencies": {
     "tsup": "catalog:",
