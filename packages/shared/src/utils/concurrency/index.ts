@@ -1,2 +1,2 @@
-export * from "./concurrency";
+export * as Concurrency from "./concurrency";
 
