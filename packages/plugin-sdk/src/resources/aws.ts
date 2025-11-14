@@ -48,6 +48,5 @@ export { Topic } from "sst/components/topic";
 export type { TopicArgs } from "sst/components/topic";
 
 // Re-export AWS utilities
-// @ts-expect-error - @pulumi/aws peer dependency, available at runtime
 export { getRegionOutput } from "@pulumi/aws";
 

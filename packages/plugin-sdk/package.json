@@ -8,36 +8,46 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "default": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "default": "./dist/index.mjs"
     },
     "./types": {
-      "types": "./src/types/index.ts",
-      "default": "./src/types/index.ts"
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.mjs",
+      "require": "./dist/types/index.js",
+      "default": "./dist/types/index.mjs"
     },
     "./hooks": {
-      "types": "./src/hooks/index.ts",
-      "default": "./src/hooks/index.ts"
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.mjs",
+      "require": "./dist/hooks/index.js",
+      "default": "./dist/hooks/index.mjs"
     },
     "./component": {
-      "types": "./src/component/index.ts",
-      "default": "./src/component/index.ts"
+      "types": "./dist/component/index.d.ts",
+      "import": "./dist/component/index.mjs",
+      "require": "./dist/component/index.js",
+      "default": "./dist/component/index.mjs"
     },
     "./resources": {
-      "types": "./src/resources/index.ts",
-      "default": "./src/resources/index.ts"
+      "types": "./dist/resources/index.d.ts",
+      "import": "./dist/resources/index.mjs",
+      "require": "./dist/resources/index.js",
+      "default": "./dist/resources/index.mjs"
     },
     "./templates": {
-      "types": "./src/templates/index.ts",
-      "default": "./src/templates/index.ts"
+      "types": "./dist/templates/index.d.ts",
+      "import": "./dist/templates/index.mjs",
+      "require": "./dist/templates/index.js",
+      "default": "./dist/templates/index.mjs"
     },
     "./generator": {
-      "types": "./src/generator/index.ts",
-      "default": "./src/generator/index.ts"
-    },
-    "./types/*": {
-      "types": "./src/types/*.ts",
-      "default": "./src/types/*.ts"
+      "types": "./dist/generator/index.d.ts",
+      "import": "./dist/generator/index.mjs",
+      "require": "./dist/generator/index.js",
+      "default": "./dist/generator/index.mjs"
     }
   },
   "scripts": {
@@ -74,6 +84,8 @@
     "vitest": "catalog:"
   }
 }
+
+
 
 
 
