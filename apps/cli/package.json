@@ -24,7 +24,22 @@
     "@sst-toolkit/core": "workspace:*",
     "@sst-toolkit/plugin-sdk": "workspace:*",
     "@sst-toolkit/shared": "workspace:*",
-    "commander": "catalog:"
+    "commander": "catalog:",
+    "@aws-sdk/client-apigatewayv2": "catalog:",
+    "@aws-sdk/client-cloudwatch-logs": "catalog:",
+    "@aws-sdk/client-dynamodb": "catalog:",
+    "@aws-sdk/client-ec2": "catalog:",
+    "@aws-sdk/client-eventbridge": "catalog:",
+    "@aws-sdk/client-lambda": "catalog:",
+    "@aws-sdk/client-resource-groups-tagging-api": "catalog:",
+    "@aws-sdk/client-s3": "catalog:",
+    "@aws-sdk/client-cloudwatch": "catalog:",
+    "@aws-sdk/client-elasticache": "catalog:",
+    "@aws-sdk/client-iam": "catalog:",
+    "@aws-sdk/client-rds": "catalog:",
+    "@aws-sdk/client-servicediscovery": "catalog:",
+    "@aws-sdk/client-sqs": "catalog:",
+    "@aws-sdk/credential-providers": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",

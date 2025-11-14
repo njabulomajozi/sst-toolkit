@@ -54,6 +54,21 @@ catalog:
   '@pulumi/aws': ^6.0.0
   '@pulumi/pulumi': ^3.0.0
   'sst': ^3.0.0
+  '@aws-sdk/client-apigatewayv2': 3.907.0
+  '@aws-sdk/client-cloudwatch-logs': 3.907.0
+  '@aws-sdk/client-dynamodb': 3.907.0
+  '@aws-sdk/client-ec2': 3.907.0
+  '@aws-sdk/client-eventbridge': 3.907.0
+  '@aws-sdk/client-lambda': 3.907.0
+  '@aws-sdk/client-resource-groups-tagging-api': 3.907.0
+  '@aws-sdk/client-s3': 3.907.0
+  '@aws-sdk/client-cloudwatch': 3.907.0
+  '@aws-sdk/client-elasticache': 3.907.0
+  '@aws-sdk/client-iam': 3.907.0
+  '@aws-sdk/client-rds': 3.907.0
+  '@aws-sdk/client-servicediscovery': 3.907.0
+  '@aws-sdk/client-sqs': 3.907.0
+  '@aws-sdk/credential-providers': 3.907.0
 
 
 
