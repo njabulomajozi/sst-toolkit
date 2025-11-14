@@ -31,8 +31,16 @@ sst-toolkit resources find \
 **Options:**
 - `--tag KEY VALUE`: Tag filter (can be used multiple times)
 - `--tagMatch <AND|OR>`: Tag matching logic (default: AND)
-- `--region <region>`: AWS region (default: us-east-1)
-- `--profile <profile>`: AWS profile (default: default)
+- `--region <region>`: AWS region (default: us-east-1 or AWS_REGION env var)
+- `--profile <profile>`: AWS profile (defaults to AWS_PROFILE env var or 'default')
+
+**AWS Credentials:**
+The CLI automatically detects and uses AWS credentials in this priority order:
+1. **Environment variables** (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN`) - Highest priority
+2. **AWS profile** (via `--profile` flag or `AWS_PROFILE` environment variable)
+3. **Default AWS credential chain** (checks ~/.aws/credentials, IAM roles, etc.)
+
+This means if you've logged in with AWS SSO and have credentials in your environment, the CLI will automatically use them without needing to specify a profile.
 
 **Example Output:**
 ```
@@ -82,10 +90,13 @@ sst-toolkit resources delete \
 **Options:**
 - `--tag KEY VALUE`: Tag filter (can be used multiple times)
 - `--tagMatch <AND|OR>`: Tag matching logic (default: AND)
-- `--region <region>`: AWS region
-- `--profile <profile>`: AWS profile
+- `--region <region>`: AWS region (default: us-east-1 or AWS_REGION env var)
+- `--profile <profile>`: AWS profile (defaults to AWS_PROFILE env var or 'default')
 - `--dry-run`: Preview changes without deleting
 - `--force, -f`: Skip confirmation prompts
+
+**AWS Credentials:**
+Same credential resolution as the `find` command - automatically uses environment variables if available.
 
 **Important:** Always use `--dry-run` first to preview what will be deleted!
 

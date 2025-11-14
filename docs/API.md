@@ -21,6 +21,10 @@ import * as State from "@sst-toolkit/core/state";
 import type { ISSTState } from "@sst-toolkit/shared/types/sst";
 
 const nodes = State.parseState(state);
+
+// Or using namespace imports
+import { Types } from "@sst-toolkit/shared/types";
+const state: Types.Sst.ISSTState = await loadState();
 ```
 
 #### `getResourceName(resource: ISSTResource): string`
@@ -240,7 +244,11 @@ Pre-built templates available:
 ```typescript
 import * as Templates from "@sst-toolkit/plugin-sdk/templates";
 
+// Access via namespace
 const template = Templates.Basic.Basic;
+
+// Or direct import
+import { pLimit } from "@sst-toolkit/shared/utils/concurrency";
 ```
 
 ## Type Definitions

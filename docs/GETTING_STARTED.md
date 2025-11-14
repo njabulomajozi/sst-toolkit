@@ -70,12 +70,18 @@ Find AWS resources by tags:
 cd apps/cli
 pnpm build
 
-# Find resources
+# Find resources (uses AWS credentials from environment or profile)
 ./dist/index.js resources find \
   --tag sst:stage dev \
   --tag sst:app myapp \
   --region us-east-1 \
   --profile myprofile
+
+# Or use environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, etc.)
+# The CLI automatically detects and uses these
+./dist/index.js resources find \
+  --tag sst:stage dev \
+  --tag sst:app myapp
 ```
 
 ### 2. Create Your First Component
