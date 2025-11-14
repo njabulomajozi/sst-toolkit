@@ -1,14 +1,12 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { ResourceList } from "~/components/ResourceList";
 import { ResourceDetail } from "~/components/ResourceDetail";
-import { ResourceStats } from "~/components/ResourceStats";
-import { CostDashboard } from "~/components/CostDashboard";
 import { WorkflowCanvas } from "~/components/workflow/WorkflowCanvas";
 import { PendingOperationsList } from "~/components/PendingOperationsList";
-import { StateFileSelector } from "~/components/StateFileSelector";
 import { ErrorBoundary } from "~/components/ErrorBoundary";
 import { GlobalSearch } from "~/components/GlobalSearch";
+import { StateFileUpload } from "~/components/StateFileUpload";
 import * as State from "@sst-toolkit/core/state";
 import * as Relationships from "@sst-toolkit/core/relationships";
 import * as Workflow from "@sst-toolkit/core/workflow";
@@ -21,57 +19,43 @@ function App() {
   const [state, setState] = useState<ISSTState | null>(null);
   const [selectedResource, setSelectedResource] = useState<ISSTResource | null>(null);
   const [nodes, setNodes] = useState<ReturnType<typeof State.parseState>>([]);
-  const [stateFile, setStateFile] = useState<string>("state.json");
   const [loadingError, setLoadingError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    async function loadState() {
-      setIsLoading(true);
+  const handleFileUpload = useCallback(async (file: File) => {
+    setIsLoading(true);
+    setLoadingError(null);
+    try {
+      const text = await file.text();
+      const parsedState = JSON.parse(text) as ISSTState;
+      setState(parsedState);
+      const parsedNodes = State.parseState(parsedState);
+      setNodes(parsedNodes);
       setLoadingError(null);
-      try {
-        const response = await fetch(`/misc/${stateFile}`);
-        if (!response.ok) {
-          throw new Error(`Failed to load state file: ${response.statusText}`);
-        }
-        const parsedState = (await response.json()) as ISSTState;
-        setState(parsedState);
-        const parsedNodes = State.parseState(parsedState);
-        setNodes(parsedNodes);
-        setLoadingError(null);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Failed to load state file";
-        setLoadingError(errorMessage);
-        console.error("Failed to parse state:", error);
-      } finally {
-        setIsLoading(false);
-      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to parse state file";
+      setLoadingError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    loadState();
-  }, [stateFile]);
+  }, []);
 
-
-  // Memoize callback to prevent unnecessary re-renders - must be before conditional return
   const handleResourceSelect = useCallback((resource: ISSTResource) => {
     setSelectedResource(resource);
   }, []);
 
-  // Memoize allResources - must be before conditional return
   const allResources = useMemo(() => {
     return state?.latest?.resources ?? [];
   }, [state?.latest?.resources]);
 
-  // Memoize pendingOperations - must be before conditional return
   const pendingOperations = useMemo(() => {
     return state?.latest.pending_operations ?? [];
   }, [state?.latest.pending_operations]);
 
-  // Extract resources from pending operations for stats
   const pendingOperationsResources = useMemo(() => {
     return pendingOperations.map((op) => op.resource);
   }, [pendingOperations]);
 
-  // Build workflow from resources
   const workflow = useMemo(() => {
     if (allResources.length === 0) {
       return { nodes: [], edges: [] };
@@ -79,6 +63,38 @@ function App() {
     const relationships = Relationships.parseResourceRelationships(allResources);
     return Workflow.buildWorkflow(allResources, relationships);
   }, [allResources]);
+
+  if (!state && !isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-6">
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <CardTitle>Upload SST State File</CardTitle>
+            <CardDescription>
+              Upload a state file exported from your SST project to visualize your infrastructure
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <StateFileUpload onFileUpload={handleFileUpload} />
+            {loadingError && (
+              <div className="mt-4 p-3 bg-destructive/10 rounded-md">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="h-4 w-4 text-destructive mt-0.5" />
+                  <p className="text-sm text-destructive">{loadingError}</p>
+                </div>
+              </div>
+            )}
+            <div className="mt-4 text-xs text-muted-foreground space-y-1">
+              <p>To export your SST state:</p>
+              <code className="block p-2 bg-muted rounded text-xs">
+                npx sst state export --stage dev &gt; state.json
+              </code>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -101,7 +117,7 @@ function App() {
               <CardTitle>Failed to Load State</CardTitle>
             </div>
             <CardDescription>
-              Unable to load the state file. Please check that the file exists and is valid.
+              Unable to load the state file. Please check that the file is valid.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -110,18 +126,7 @@ function App() {
                 <p className="text-sm font-mono text-muted-foreground">{loadingError}</p>
               </div>
             )}
-            <div className="flex gap-2">
-              <StateFileSelector
-                currentFile={stateFile}
-                onFileChange={setStateFile}
-              />
-            </div>
-            <div className="text-xs text-muted-foreground space-y-1">
-              <p>Make sure you have exported your SST state:</p>
-              <code className="block p-2 bg-muted rounded text-xs">
-                npx sst state export --stage dev &gt; apps/explorer/public/misc/state.json
-              </code>
-            </div>
+            <StateFileUpload onFileUpload={handleFileUpload} />
           </CardContent>
         </Card>
       </div>
@@ -133,7 +138,6 @@ function App() {
       <div className="min-h-screen bg-background flex flex-col">
         <main className="flex-1 overflow-auto p-6">
           <div className="max-w-7xl mx-auto space-y-6">
-            {/* Page Header */}
             <div className="space-y-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-2 flex-1">
@@ -146,82 +150,31 @@ function App() {
                     {new Date(state.latest.manifest.time).toLocaleString()}
                   </p>
                 </div>
-                <div className="w-64">
-                  <StateFileSelector
-                    currentFile={stateFile}
-                    onFileChange={setStateFile}
+                <div className="flex items-center gap-4">
+                  <StateFileUpload onFileUpload={handleFileUpload} />
+                  <GlobalSearch
+                    resources={allResources}
+                    pendingOperationsResources={pendingOperationsResources}
+                    onSelectResource={handleResourceSelect}
                   />
                 </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <GlobalSearch
-                  resources={allResources}
-                  pendingOperationsResources={pendingOperationsResources}
-                  onSelectResource={handleResourceSelect}
-                />
               </div>
             </div>
 
-          {/* Tabs for different views */}
-          <Tabs defaultValue="overview" className="space-y-4">
-            <TabsList>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="explorer">Ready</TabsTrigger>
-              {pendingOperations.length > 0 && (
-                <TabsTrigger value="pending">Pending</TabsTrigger>
-              )}
-              <TabsTrigger value="workflow">Workflow</TabsTrigger>
-              <TabsTrigger value="costs">Costs</TabsTrigger>
-            </TabsList>
+            <Tabs defaultValue="explorer" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="explorer">Explorer</TabsTrigger>
+                {pendingOperations.length > 0 && (
+                  <TabsTrigger value="pending">Pending</TabsTrigger>
+                )}
+                <TabsTrigger value="workflow">Workflow</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="overview" className="space-y-6">
-              <ResourceStats
-                resources={allResources}
-                pendingOperationsResources={pendingOperationsResources}
-              />
-            </TabsContent>
-
-            <TabsContent value="explorer" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6 h-[calc(100vh-200px)]">
-                <div className="overflow-hidden">
-                  <ResourceList
-                    nodes={nodes}
-                    onSelectResource={handleResourceSelect}
-                    selectedUrn={selectedResource?.urn}
-                  />
-                </div>
-                <div className="sticky top-0 h-full overflow-hidden">
-                  <ResourceDetail resource={selectedResource} />
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="workflow" className="space-y-6">
-              <div className="h-[calc(100vh-200px)] border rounded-lg overflow-hidden">
-                <WorkflowCanvas
-                  nodes={workflow.nodes}
-                  edges={workflow.edges}
-                  onNodeSelect={(nodeId) => {
-                    const resource = allResources.find((r) => r.urn === nodeId);
-                    if (resource) {
-                      handleResourceSelect(resource);
-                    }
-                  }}
-                  selectedNodeId={selectedResource?.urn}
-                />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="costs" className="space-y-6">
-              <CostDashboard resources={allResources} />
-            </TabsContent>
-
-            {pendingOperations.length > 0 && (
-              <TabsContent value="pending" className="space-y-6">
+              <TabsContent value="explorer" className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6 h-[calc(100vh-200px)]">
                   <div className="overflow-hidden">
-                    <PendingOperationsList
-                      operations={pendingOperations}
+                    <ResourceList
+                      nodes={nodes}
                       onSelectResource={handleResourceSelect}
                       selectedUrn={selectedResource?.urn}
                     />
@@ -231,12 +184,43 @@ function App() {
                   </div>
                 </div>
               </TabsContent>
-            )}
 
-          </Tabs>
-        </div>
-      </main>
-    </div>
+              {pendingOperations.length > 0 && (
+                <TabsContent value="pending" className="space-y-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6 h-[calc(100vh-200px)]">
+                    <div className="overflow-hidden">
+                      <PendingOperationsList
+                        operations={pendingOperations}
+                        onSelectResource={handleResourceSelect}
+                        selectedUrn={selectedResource?.urn}
+                      />
+                    </div>
+                    <div className="sticky top-0 h-full overflow-hidden">
+                      <ResourceDetail resource={selectedResource} />
+                    </div>
+                  </div>
+                </TabsContent>
+              )}
+
+              <TabsContent value="workflow" className="space-y-6">
+                <div className="h-[calc(100vh-200px)] border rounded-lg overflow-hidden">
+                  <WorkflowCanvas
+                    nodes={workflow.nodes}
+                    edges={workflow.edges}
+                    onNodeSelect={(nodeId) => {
+                      const resource = allResources.find((r) => r.urn === nodeId);
+                      if (resource) {
+                        handleResourceSelect(resource);
+                      }
+                    }}
+                    selectedNodeId={selectedResource?.urn}
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </main>
+      </div>
     </ErrorBoundary>
   );
 }
