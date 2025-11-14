@@ -12,13 +12,13 @@ The easiest way to create a component is using the CLI:
 
 ```bash
 # Generate a basic component
-pnpm sst-toolkit plugin create MyComponent --template basic --namespace mycompany
+sst-toolkit generate component MyComponent --template basic --namespace mycompany
 
 # Generate an AWS-focused component
-pnpm sst-toolkit plugin create MyAPI --template aws --namespace mycompany
+sst-toolkit generate component MyAPI --template aws --namespace mycompany
 
 # Generate a Cloudflare-focused component
-pnpm sst-toolkit plugin create MyWorker --template cloudflare --namespace mycompany
+sst-toolkit generate component MyWorker --template cloudflare --namespace mycompany
 ```
 
 This generates a complete component structure ready for development.
@@ -61,7 +61,7 @@ export class MyComponent extends Component.Component.SSTComponent {
 
   protected getLinkProperties(): Record<string, unknown> {
     return {
-      message: this.message,
+      message: props.message || "Hello!",
     };
   }
 }
@@ -176,7 +176,7 @@ export class Greeting extends Component.Component.SSTComponent {
   }
 
   protected getLinkProperties(): Record<string, unknown> {
-    return { message: this.message };
+    return { message: props.message };
   }
 }
 ```
@@ -297,10 +297,20 @@ export function MyStack({ stack }: App) {
 }
 ```
 
+## Generated Component Structure
+
+When you use `sst-toolkit generate component`, it creates:
+
+1. **Component class** with proper structure
+2. **TypeScript configuration** (tsconfig.json)
+3. **Build configuration** (tsup.config.ts)
+4. **Package.json** with proper dependencies
+5. **Module augmentation** (global.d.ts)
+6. **README.md** with usage examples
+
 ## Next Steps
 
 - **[Component Examples](../examples/components.md)** - See real-world examples
 - **[Component API](./component-api.md)** - Detailed API reference
 - **[Best Practices](./best-practices.md)** - Development guidelines
 - **[Using Components](./using-components.md)** - Learn how to use components
-

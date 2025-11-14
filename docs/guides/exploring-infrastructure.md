@@ -4,58 +4,126 @@ This guide explains how to use the CLI and Explorer to explore and visualize you
 
 ## CLI Commands
 
-### Explore State
+### Find Resources
 
-Explore your SST state file:
+Find AWS resources by tags:
 
 ```bash
-# Basic exploration
-pnpm sst-toolkit explore .sst/state.json
+# Basic usage
+sst-toolkit resources find \
+  --tag sst:stage dev \
+  --tag sst:app myapp
 
-# Output:
-# Found 42 resources
-# Found 38 relationships
+# With region and profile
+sst-toolkit resources find \
+  --tag sst:stage dev \
+  --tag sst:app myapp \
+  --region us-east-1 \
+  --profile myprofile
+
+# Using OR logic for tags
+sst-toolkit resources find \
+  --tag sst:stage dev \
+  --tag sst:app myapp \
+  --tagMatch OR
 ```
 
-### Visualize Workflow
+**Options:**
+- `--tag KEY VALUE`: Tag filter (can be used multiple times)
+- `--tagMatch <AND|OR>`: Tag matching logic (default: AND)
+- `--region <region>`: AWS region (default: us-east-1)
+- `--profile <profile>`: AWS profile (default: default)
 
-Generate a workflow visualization:
+**Example Output:**
+```
+🔍 FINDING AWS RESOURCES
+============================================================
+Region:   us-east-1
+Profile:  default
+============================================================
 
-```bash
-# Export to JSON
-pnpm sst-toolkit visualize .sst/state.json --format json --output workflow.json
+Searching for resources with AND tags:
+  - sst:stage=dev
+  - sst:app=myapp
 
-# Export to image (future)
-pnpm sst-toolkit visualize .sst/state.json --format image --output workflow.png
+Found 15 resource(s)
+
+Resources found:
+  lambda: 5 resource(s)
+  dynamodb: 2 resource(s)
+  apigateway: 1 resource(s)
+  s3: 3 resource(s)
+  iam: 4 resource(s)
 ```
 
-### Plugin Management
+### Delete Resources
+
+Delete AWS resources by tags:
 
 ```bash
-# List installed plugins
-pnpm sst-toolkit plugin list
+# Dry run (preview only)
+sst-toolkit resources delete \
+  --tag sst:stage dev \
+  --tag sst:app myapp \
+  --dry-run
 
-# Install a plugin
-pnpm sst-toolkit plugin install @mycompany/my-plugin
+# Actually delete (with confirmation)
+sst-toolkit resources delete \
+  --tag sst:stage dev \
+  --tag sst:app myapp
 
-# Remove a plugin
-pnpm sst-toolkit plugin remove @mycompany/my-plugin
-
-# Test a plugin
-pnpm sst-toolkit plugin test
-
-# Publish a plugin
-pnpm sst-toolkit plugin publish --dry-run
+# Skip confirmation prompt
+sst-toolkit resources delete \
+  --tag sst:stage dev \
+  --tag sst:app myapp \
+  --force
 ```
 
-### Component Generation
+**Options:**
+- `--tag KEY VALUE`: Tag filter (can be used multiple times)
+- `--tagMatch <AND|OR>`: Tag matching logic (default: AND)
+- `--region <region>`: AWS region
+- `--profile <profile>`: AWS profile
+- `--dry-run`: Preview changes without deleting
+- `--force, -f`: Skip confirmation prompts
+
+**Important:** Always use `--dry-run` first to preview what will be deleted!
+
+### Generate Component
+
+Generate a new SST component from a template:
 
 ```bash
-# Generate a component
-pnpm sst-toolkit generate component MyComponent --namespace mycompany
+# Basic component
+sst-toolkit generate component MyComponent \
+  --template basic \
+  --namespace mycompany
 
-# Generate an adapter
-pnpm sst-toolkit generate adapter MyAdapter --namespace mycompany
+# AWS-focused component
+sst-toolkit generate component MyAPI \
+  --template aws \
+  --namespace mycompany \
+  --output ./my-components
+
+# Cloudflare-focused component
+sst-toolkit generate component MyWorker \
+  --template cloudflare \
+  --namespace mycompany
+```
+
+**Templates:**
+- `basic`: Minimal component template
+- `aws`: AWS-focused template with Function, API Gateway, and DynamoDB
+- `cloudflare`: Cloudflare-focused template with Worker, KV, and D1
+
+### Generate Adapter
+
+Generate a new SST adapter:
+
+```bash
+sst-toolkit generate adapter MyAdapter \
+  --namespace mycompany \
+  --output ./my-adapters
 ```
 
 ## Explorer Web App
@@ -73,44 +141,48 @@ pnpm dev
 
 ### Features
 
-#### Overview Tab
+#### File Upload
 
-- Resource statistics
-- Resource counts by type
-- Provider distribution
-- Category breakdown
+- Upload SST state files directly in the browser
+- No need to manually place files in specific directories
+- Supports any valid SST state JSON file
+- Automatic validation and error handling
 
 #### Explorer Tab
 
-- Resource list with filtering
-- Resource details panel
+- Resource list with tree view
+- Resource type filtering
 - Search functionality
-- Type and provider filters
+- Resource status indicators
+- Click to view detailed resource information
+
+#### Pending Operations Tab
+
+- View all pending operations (create, update, delete, replace)
+- Grouped by operation type and resource category
+- Search and filter pending operations
+- Visual indicators for different operation types
+- Only appears when there are pending operations in the state file
 
 #### Workflow Tab
 
 - Interactive workflow visualization
-- Resource relationships
-- Dependency graph
-- Node selection and details
+- Resource relationships and dependencies
+- Interactive canvas with zoom and pan
+- Click nodes to view resource details
+- Visual representation of infrastructure topology
 
-#### Costs Tab
+#### Global Search
 
-- Cost estimation dashboard
-- Resource cost breakdown
-- Cost trends
-- Provider cost analysis
-
-#### Plugins Tab
-
-- Plugin marketplace
-- Installed plugins
-- Plugin dependencies
-- Plugin management
+- Quick search across all resources (⌘K / Ctrl+K)
+- Search by name, type, URN, or category
+- Results ranked by relevance
+- Visual indicators for pending resources
+- Keyboard navigation support
 
 ### Loading State
 
-The Explorer automatically loads state from `/public/misc/state.json`. To use your own SST state:
+The Explorer uses file upload to load state files. To use your own SST state:
 
 #### Export State from Your SST Project
 
@@ -118,28 +190,21 @@ From your SST project directory, export the state for the stage you want to expl
 
 ```bash
 # Export state for a specific stage (e.g., dev, staging, prod)
-npx sst state export --stage dev > /path/to/sst-toolkit/apps/explorer/public/misc/state.json
-
-# Example with absolute path
-npx sst state export --stage dev > ~/Documents/development/playground/oss/sst-toolkit/apps/explorer/public/misc/state.json
-
-# Or use relative path from your SST project
-npx sst state export --stage dev > ../sst-toolkit/apps/explorer/public/misc/state.json
+npx sst state export --stage dev > state.json
 ```
 
-**Important Notes**:
-- Replace `/path/to/sst-toolkit` with the actual path to your sst-toolkit repository
-- Adjust the stage name (`dev`, `staging`, `prod`, etc.) to match your SST project stages
-- The state file will be saved to `apps/explorer/public/misc/state.json`
-- The Explorer will automatically load this file when you start the development server
+#### Upload in Explorer
 
-#### Alternative: Manual Copy
+1. Start the Explorer development server
+2. Click the "Upload State File" button
+3. Select your exported `state.json` file
+4. The Explorer will automatically parse and display your infrastructure
 
-If you prefer to copy the state file manually:
-
-1. Export state from your SST project: `npx sst state export --stage dev > state.json`
-2. Copy the file to `apps/explorer/public/misc/state.json`
-3. Start the Explorer development server
+**Benefits of File Upload:**
+- No need to manually copy files
+- Works with any state file location
+- Easy to switch between different state files
+- No file path configuration needed
 
 ## Visualization
 
@@ -164,24 +229,43 @@ The Explorer detects and visualizes:
 - Event connections
 - Data flow
 
+### Interactive Features
+
+- **Zoom**: Use mouse wheel or pinch gesture
+- **Pan**: Click and drag the canvas
+- **Select**: Click on nodes to view details
+- **Search**: Use global search to find and navigate to resources
+
 ## Exporting Data
-
-### Export Workflow
-
-```bash
-pnpm sst-toolkit visualize .sst/state.json --format json --output workflow.json
-```
 
 ### Export State
 
 ```bash
-# Copy state file
-cp .sst/state.json exported-state.json
+# Export state from your SST project
+npx sst state export --stage dev > state.json
 ```
+
+The exported state file can then be uploaded to the Explorer for visualization.
+
+## Best Practices
+
+### Finding Resources
+
+1. Always use specific tags to narrow down results
+2. Use `--dry-run` when deleting resources
+3. Use `--tagMatch OR` when you want to find resources matching any tag
+4. Specify region and profile for multi-region/multi-account setups
+
+### Using the Explorer
+
+1. Export state files regularly to track infrastructure changes
+2. Use global search (⌘K) for quick navigation
+3. Check pending operations tab to see what's being deployed
+4. Use workflow visualization to understand dependencies
 
 ## Next Steps
 
 - **[Component Examples](../examples/components.md)** - See component examples
 - **[Using Components](./using-components.md)** - Learn how to use components
 - **[API Reference](../API.md)** - Complete API documentation
-
+- **[Creating Components](./creating-components.md)** - Create your own components

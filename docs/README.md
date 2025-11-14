@@ -13,24 +13,22 @@ Welcome to the SST Toolkit documentation! This guide will help you get started w
 - **[Using Components](./guides/using-components.md)** - Learn how to use components in your SST projects
 - **[Exploring Infrastructure](./guides/exploring-infrastructure.md)** - Use the CLI and Explorer to understand your infrastructure
 - **[Publishing Components](./guides/publishing-components.md)** - Share your components with the community
+- **[Component API](./guides/component-api.md)** - Component development API reference
+- **[Best Practices](./guides/best-practices.md)** - Guidelines for developing high-quality components
 
 ### API Reference
 - **[Complete API Reference](./API.md)** - Full API documentation for all packages
-- **[Component API](./guides/component-api.md)** - Component development API
 - **[Core Utilities API](./API.md#core-apis)** - State parsing, relationships, workflow building
 
 ### Examples
 - **[Component Examples](./examples/components.md)** - Real-world component examples
 - **[Integration Examples](./examples/integration.md)** - How to integrate components in SST projects
 
-### Best Practices
-- **[Component Best Practices](./guides/best-practices.md)** - Guidelines for developing high-quality components
-
 ## 🚀 Quick Links
 
 - [Creating Your First Component](./guides/creating-components.md#quick-start)
-- [Using the CLI](./guides/exploring-infrastructure.md#cli)
-- [Using the Explorer](./guides/exploring-infrastructure.md#explorer)
+- [Using the CLI](./guides/exploring-infrastructure.md#cli-commands)
+- [Using the Explorer](./guides/exploring-infrastructure.md#explorer-web-app)
 - [API Reference](./API.md)
 
 ## 📖 Documentation by Use Case
@@ -49,6 +47,14 @@ Welcome to the SST Toolkit documentation! This guide will help you get started w
 2. Use the [CLI commands](./guides/exploring-infrastructure.md#cli-commands)
 3. Try the [Explorer web app](./guides/exploring-infrastructure.md#explorer-web-app)
 
+### I want to find AWS resources
+1. Read [Exploring Infrastructure - Find Resources](./guides/exploring-infrastructure.md#find-resources)
+2. Learn about [tag filtering](./guides/exploring-infrastructure.md#find-resources)
+
+### I want to generate a component
+1. Read [Creating Components - Quick Start](./guides/creating-components.md#quick-start)
+2. See [Available Templates](./guides/creating-components.md#quick-start)
+
 ### I want to publish my component
 1. Read [Publishing Components](./guides/publishing-components.md)
 2. Follow [Best Practices](./guides/best-practices.md)
@@ -61,3 +67,27 @@ Welcome to the SST Toolkit documentation! This guide will help you get started w
 - **Need API details?** See [API Reference](./API.md)
 - **Best practices?** Read [Best Practices](./guides/best-practices.md)
 
+## Key Features
+
+### CLI Tools
+- **Find Resources**: Find AWS resources by tags
+- **Delete Resources**: Safely delete AWS resources with dry-run support
+- **Generate Component**: Create new components from templates
+- **Generate Adapter**: Create new adapters
+
+### Explorer Web App
+- **File Upload**: Upload and visualize SST state files
+- **Resource Explorer**: Browse resources with search and filtering
+- **Workflow Visualization**: Interactive graph of resource relationships
+- **Pending Operations**: View and manage pending operations
+- **Global Search**: Quick search across all resources (⌘K / Ctrl+K)
+
+### Component Development
+- **Templates**: Pre-built templates for basic, AWS, and Cloudflare components
+- **Type Safety**: Full TypeScript support
+- **SST Integration**: Seamless integration with SST Link
+- **Module Augmentation**: Global type support
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](../CONTRIBUTING.md) for details.

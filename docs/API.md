@@ -253,9 +253,11 @@ interface ISSTState {
   latest: {
     manifest: {
       version: string;
-      time: number;
+      time: string;
     };
     resources: ISSTResource[];
+    pending_operations?: IPendingOperation[];
+    metadata?: Record<string, unknown>;
   };
 }
 ```
@@ -266,10 +268,26 @@ interface ISSTState {
 interface ISSTResource {
   urn: string;
   type: string;
+  custom: boolean;
   inputs?: Record<string, unknown>;
   outputs?: Record<string, unknown>;
   parent?: string;
-  custom?: boolean;
+  id?: string;
+  created?: string;
+  modified?: string;
+  sourcePosition?: string;
+  provider?: string;
+  dependencies?: string[];
+  propertyDependencies?: Record<string, string[]>;
+}
+```
+
+### IPendingOperation
+
+```typescript
+interface IPendingOperation {
+  resource: ISSTResource;
+  type: string; // "creating" | "updating" | "deleting" | "replacing"
 }
 ```
 

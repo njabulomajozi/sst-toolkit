@@ -6,10 +6,10 @@ This guide will help you get started with SST Toolkit quickly.
 
 SST Toolkit is a comprehensive toolkit for exploring, visualizing, and extending SST (Serverless Stack). It provides:
 
-- **Explorer**: Visual SST state explorer with workflow builder
-- **CLI**: Command-line tools for SST state exploration
+- **Explorer**: Visual web application for exploring and visualizing SST infrastructure state
+- **CLI**: Command-line tools for finding AWS resources and generating SST components
 - **Core Utilities**: State parsing, relationship detection, and workflow building
-- **Plugin SDK**: SDK for creating custom SST components
+- **Plugin SDK**: SDK for creating custom SST components and adapters
 
 ## Installation
 
@@ -35,27 +35,14 @@ pnpm build
 
 ## Quick Start
 
-### 1. Explore Your SST State
-
-#### Using the CLI
-
-```bash
-# First, export your SST state (from your SST project directory)
-npx sst state export --stage dev > state.json
-
-# Then explore it
-pnpm sst-toolkit explore state.json
-```
+### 1. Explore Your SST Infrastructure
 
 #### Using the Explorer Web App
 
 1. **Export your SST state** from your SST project:
    ```bash
    # From your SST project directory
-   npx sst state export --stage dev > /path/to/sst-toolkit/apps/explorer/public/misc/state.json
-   
-   # Example:
-   npx sst state export --stage dev > ~/Documents/development/playground/oss/sst-toolkit/apps/explorer/public/misc/state.json
+   npx sst state export --stage dev > state.json
    ```
 
 2. **Start the Explorer**:
@@ -65,18 +52,59 @@ pnpm sst-toolkit explore state.json
    # Open http://localhost:5173
    ```
 
-The Explorer will automatically load the state file from `public/misc/state.json`.
+3. **Upload your state file**: Click the "Upload State File" button and select your `state.json` file
+
+The Explorer provides:
+- 📤 File upload for easy state file loading
+- 🔍 Resource explorer with search functionality
+- 📊 Interactive workflow visualization
+- ⏳ Pending operations view
+- 🔎 Global search (⌘K / Ctrl+K)
+
+#### Using the CLI to Find Resources
+
+Find AWS resources by tags:
+
+```bash
+# Build the CLI first
+cd apps/cli
+pnpm build
+
+# Find resources
+./dist/index.js resources find \
+  --tag sst:stage dev \
+  --tag sst:app myapp \
+  --region us-east-1 \
+  --profile myprofile
+```
 
 ### 2. Create Your First Component
 
 ```bash
 # Generate a new component
-pnpm sst-toolkit plugin create MyComponent --template basic --namespace mycompany
+cd apps/cli
+./dist/index.js generate component MyComponent \
+  --template basic \
+  --namespace mycompany \
+  --output ./my-components
 ```
 
 This creates a complete component structure ready for development.
 
-### 3. Use Your Component
+**Available templates:**
+- `basic`: Minimal component template
+- `aws`: AWS-focused template with Function, API Gateway, and DynamoDB
+- `cloudflare`: Cloudflare-focused template with Worker, KV, and D1
+
+### 3. Generate an Adapter
+
+```bash
+./dist/index.js generate adapter MyAdapter \
+  --namespace mycompany \
+  --output ./my-adapters
+```
+
+### 4. Use Your Component
 
 ```typescript
 // sst.config.ts
@@ -115,7 +143,7 @@ sst-toolkit/
 │   ├── shared/        # Shared types, schemas, constants
 │   └── plugin-sdk/    # SDK for creating plugins and components
 ├── apps/
-│   ├── explorer/      # Visual SST state explorer
+│   ├── explorer/      # Visual SST state explorer (React app)
 │   └── cli/           # Command-line interface
 └── examples/          # Example components and plugins
 ```
@@ -129,9 +157,13 @@ sst-toolkit/
 
 ## Key Concepts
 
-### Components vs Plugins
+### Components vs Adapters
 
-In SST Toolkit, **components** and **plugins** refer to the same thing: custom SST components that extend SST's capabilities. The terms are used interchangeably.
+In SST Toolkit:
+- **Components**: Custom SST components that wrap and combine SST resources
+- **Adapters**: Similar to components but typically used for integration patterns
+
+Both use the same base class (`SSTComponent`) and follow the same patterns.
 
 ### Pulumi Type Format
 
@@ -168,14 +200,18 @@ pnpm test
 # Run linter
 pnpm lint
 
-# Create a new component
-pnpm sst-toolkit plugin create MyComponent --template basic --namespace mycompany
+# Generate a new component
+cd apps/cli && pnpm build
+./dist/index.js generate component MyComponent --template basic --namespace mycompany
 
-# Explore SST state
-pnpm sst-toolkit explore .sst/state.json
+# Generate a new adapter
+./dist/index.js generate adapter MyAdapter --namespace mycompany
 
-# Visualize workflow
-pnpm sst-toolkit visualize .sst/state.json --format json --output workflow.json
+# Find AWS resources
+./dist/index.js resources find --tag sst:stage dev --tag sst:app myapp
+
+# Delete AWS resources (with dry-run)
+./dist/index.js resources delete --tag sst:stage dev --tag sst:app myapp --dry-run
 ```
 
 ## Getting Help
@@ -192,4 +228,4 @@ Now that you're set up, check out:
 1. **[Creating Components](./guides/creating-components.md)** - Create your first component
 2. **[Component Examples](./examples/components.md)** - See what's possible
 3. **[Using Components](./guides/using-components.md)** - Integrate components in your projects
-
+4. **[Exploring Infrastructure](./guides/exploring-infrastructure.md)** - Use the CLI and Explorer
