@@ -3,9 +3,8 @@
  * Finds Lambda functions and event source mappings
  */
 
-import { findResourcesByTags } from "../../resources/base.js";
-import type { IResourceFinder } from "../../resources/interfaces.js";
-import type { IFinderOptions } from "../../resources/types.js";
+import { findResourcesByTags } from "@sst-toolkit/shared/utils/cli/base";
+import type { IResourceFinder, IFinderOptions } from "@sst-toolkit/shared/types/cli/resources";
 
 export class ComputeResourceFinder implements IResourceFinder {
   async find(options: IFinderOptions) {

@@ -5,9 +5,9 @@
 
 import * as InternalResources from "../../internal/resources/index.js";
 import { ResourceRouter } from "../../utils/router.js";
-import { logger, colors } from "../../utils/logger.js";
-import type { IFinderOptions } from "../../resources/types.js";
-import { buildResourceGraph } from "../../resources/graph.js";
+import { logger, colors } from "@sst-toolkit/shared/utils/cli/logger";
+import type { IFinderOptions } from "@sst-toolkit/shared/types/cli/resources";
+import { buildResourceGraph } from "@sst-toolkit/shared/utils/cli/graph";
 
 export interface ITagFilter {
   key: string;

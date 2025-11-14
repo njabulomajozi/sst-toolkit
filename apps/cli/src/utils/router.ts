@@ -3,8 +3,7 @@
  * Routes resources to appropriate removers (Strategy pattern, OCP, DIP)
  */
 
-import type { IResource, IRemoverOptions, IRemoverResult } from "../resources/types.js";
-import type { IResourceRouter } from "../resources/interfaces.js";
+import type { IResource, IRemoverOptions, IRemoverResult, IResourceRouter } from "@sst-toolkit/shared/types/cli/resources";
 import { removeComputeResource } from "../internal/resources/compute/remover.js";
 import { removeStorageResource } from "../internal/resources/storage/remover.js";
 import { removeNetworkingResource } from "../internal/resources/networking/remover.js";

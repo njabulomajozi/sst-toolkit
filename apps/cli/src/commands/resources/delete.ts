@@ -5,10 +5,10 @@
 
 import * as InternalResources from "../../internal/resources/index.js";
 import { ResourceRouter } from "../../utils/router.js";
-import { logger, colors } from "../../utils/logger.js";
-import { requireConfirmation } from "../../utils/confirmation.js";
-import type { IFinderOptions, IRemoverOptions } from "../../resources/types.js";
-import { buildResourceGraph } from "../../resources/graph.js";
+import { logger, colors } from "@sst-toolkit/shared/utils/cli/logger";
+import { requireConfirmation } from "@sst-toolkit/shared/utils/cli/confirmation";
+import type { IFinderOptions, IRemoverOptions } from "@sst-toolkit/shared/types/cli/resources";
+import { buildResourceGraph } from "@sst-toolkit/shared/utils/cli/graph";
 import type { ITagFilter } from "./find.js";
 
 export interface IDeleteCommandOptions {

@@ -3,12 +3,9 @@ import * as path from "path";
 import * as Templates from "@sst-toolkit/plugin-sdk/templates";
 import * as Generator from "@sst-toolkit/plugin-sdk/generator";
 
-export interface IGenerateComponentOptions {
-  name: string;
-  template?: "basic" | "aws" | "cloudflare";
-  namespace?: string;
-  outputDir?: string;
-}
+import type { Commands } from "@sst-toolkit/shared/types/cli";
+
+type IGenerateComponentOptions = Commands.IGenerateComponentOptions;
 
 function validateComponentName(name: string): void {
   if (!name || name.trim() === "") {

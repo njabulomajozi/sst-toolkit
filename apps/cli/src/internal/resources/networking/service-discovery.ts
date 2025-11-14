@@ -4,8 +4,8 @@
  */
 
 import { ServiceDiscoveryClient, DeleteNamespaceCommand } from "@aws-sdk/client-servicediscovery";
-import type { IResource, IRemoverOptions, IRemoverResult } from "../../resources/types.js";
-import { createClientConfig } from "../../resources/base.js";
+import type { IResource, IRemoverOptions, IRemoverResult } from "@sst-toolkit/shared/types/cli/resources";
+import { createClientConfig } from "@sst-toolkit/shared/utils/cli/base";
 
 /**
  * Remove Service Discovery namespace

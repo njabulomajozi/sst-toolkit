@@ -8,9 +8,9 @@ import { S3Client, DeleteBucketCommand, ListObjectsV2Command, DeleteObjectsComma
 import { SQSClient, GetQueueUrlCommand, DeleteQueueCommand } from "@aws-sdk/client-sqs";
 import { ElastiCacheClient, DeleteReplicationGroupCommand, DeleteCacheClusterCommand } from "@aws-sdk/client-elasticache";
 import { RDSClient, DeleteDBClusterCommand, DeleteDBInstanceCommand, DeleteDBSnapshotCommand } from "@aws-sdk/client-rds";
-import type { IResource, IRemoverOptions, IRemoverResult } from "../../resources/types.js";
-import { createClientConfig } from "../../resources/base.js";
-import { BaseResourceRemover } from "../../utils/remover-base.js";
+import type { IResource, IRemoverOptions, IRemoverResult } from "@sst-toolkit/shared/types/cli/resources";
+import { createClientConfig } from "@sst-toolkit/shared/utils/cli/base";
+import { BaseResourceRemover } from "@sst-toolkit/shared/utils/cli/remover-base";
 
 export class StorageResourceRemover extends BaseResourceRemover {
   async remove(resource: IResource, options: IRemoverOptions = {}): Promise<IRemoverResult> {

@@ -8,9 +8,9 @@ import { ApiGatewayV2Client, DeleteApiCommand } from "@aws-sdk/client-apigateway
 import { CloudWatchLogsClient, DeleteLogGroupCommand } from "@aws-sdk/client-cloudwatch-logs";
 import { CloudWatchClient, DeleteAlarmsCommand, DeleteDashboardsCommand } from "@aws-sdk/client-cloudwatch";
 import { EC2Client, DeleteRouteTableCommand, DisassociateRouteTableCommand, DescribeRouteTablesCommand, DeleteVpcCommand, DeleteSubnetCommand, DeleteSecurityGroupCommand, DetachInternetGatewayCommand, DeleteInternetGatewayCommand, DeleteNatGatewayCommand, DescribeSecurityGroupsCommand, DescribeInternetGatewaysCommand } from "@aws-sdk/client-ec2";
-import type { IResource, IRemoverOptions, IRemoverResult } from "../../resources/types.js";
-import { createClientConfig } from "../../resources/base.js";
-import { BaseResourceRemover } from "../../utils/remover-base.js";
+import type { IResource, IRemoverOptions, IRemoverResult } from "@sst-toolkit/shared/types/cli/resources";
+import { createClientConfig } from "@sst-toolkit/shared/utils/cli/base";
+import { BaseResourceRemover } from "@sst-toolkit/shared/utils/cli/remover-base";
 import { removeServiceDiscoveryResource } from "./service-discovery.js";
 
 export class NetworkingResourceRemover extends BaseResourceRemover {

@@ -4,9 +4,9 @@
  */
 
 import { IAMClient, DeleteRoleCommand, ListAttachedRolePoliciesCommand, DetachRolePolicyCommand, ListRolePoliciesCommand, DeleteRolePolicyCommand } from "@aws-sdk/client-iam";
-import type { IResource, IRemoverOptions, IRemoverResult } from "../../resources/types.js";
-import { createClientConfig } from "../../resources/base.js";
-import { BaseResourceRemover } from "../../utils/remover-base.js";
+import type { IResource, IRemoverOptions, IRemoverResult } from "@sst-toolkit/shared/types/cli/resources";
+import { createClientConfig } from "@sst-toolkit/shared/utils/cli/base";
+import { BaseResourceRemover } from "@sst-toolkit/shared/utils/cli/remover-base";
 
 export class SecurityResourceRemover extends BaseResourceRemover {
   async remove(resource: IResource, options: IRemoverOptions = {}): Promise<IRemoverResult> {
